@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+.env*
+# orders saved by the site when it runs on your own machine (customer details)
+data/
+.vercel
+*.log
+.claude/
+# source video, not used by the site
+components/v0.mp4
