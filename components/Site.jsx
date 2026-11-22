@@ -11,7 +11,7 @@ import { products } from "@/lib/products";
 import { CALLOUTS, CHAPTERS } from "@/lib/callouts";
 import Gate from "./Gate";
 import { PackBuy, OrderSheet, useBagCount } from "./Order";
-import JointMenu from "./JointMenu";
+import PaperMenu from "./PaperMenu";
 import Footer from "./Footer";
 import { cart, useCart } from "@/lib/cart";
 import { packPrice } from "@/lib/products";
@@ -316,8 +316,8 @@ export default function Site() {
       {/* ---------- 18+ gate, which is also the loader ---------- */}
       {gate !== "done" && <Gate onDone={() => setGate("done")} />}
 
-      {/* ---------- Phone menu: the lit rolling paper that unrolls ---------- */}
-      <JointMenu links={NAV_LINKS} onJump={(sel) => lenisRef.current?.scrollTo(sel, { duration: 2.2 })} />
+      {/* ---------- Phone menu: a burning sheet of paper that slides open ---------- */}
+      <PaperMenu links={NAV_LINKS} onJump={(sel) => lenisRef.current?.scrollTo(sel, { duration: 2.2 })} />
 
       {/* ---------- Bag, delivery details, confirmation ---------- */}
       <OrderSheet />
@@ -523,7 +523,15 @@ export default function Site() {
         </section>
 
         {/* ---------- Footer ---------- */}
-        <Footer links={NAV_LINKS} onJump={(sel) => lenisRef.current?.scrollTo(sel, { duration: 2.2 })} />
+        <Footer
+          links={NAV_LINKS}
+          onJump={(sel) => lenisRef.current?.scrollTo(sel, { duration: 2.2 })}
+          onProduct={(i) => {
+            // each product has its own screen in the sideways drop: scroll to it
+            const el = document.querySelector(".drop");
+            lenisRef.current?.scrollTo(el.offsetTop + (el.offsetHeight - window.innerHeight) * ((i + 1) / products.length), { duration: 2.4 });
+          }}
+        />
       </main>
     </div>
   );
