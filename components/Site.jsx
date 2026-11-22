@@ -7,12 +7,20 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { scroll } from "@/lib/store";
 import { DESK, LAYOUT, deskState, activeIndex } from "@/lib/desk";
-import { products, INSTAGRAM } from "@/lib/products";
+import { products } from "@/lib/products";
 import { CALLOUTS, CHAPTERS } from "@/lib/callouts";
 import Gate from "./Gate";
 import { PackBuy, OrderSheet, useBagCount } from "./Order";
+import JointMenu from "./JointMenu";
+import Footer from "./Footer";
 import { cart, useCart } from "@/lib/cart";
 import { packPrice } from "@/lib/products";
+
+const NAV_LINKS = [
+  { label: "Ritual", sel: "#story" },
+  { label: "Dive in", sel: "#dive" },
+  { label: "The drop", sel: "#drop" },
+];
 
 const Scene = dynamic(() => import("./scene/Scene"), { ssr: false });
 
@@ -65,7 +73,16 @@ export default function Site() {
       labels.forEach((el, i) => {
         const c = scroll.callouts[i];
         el.style.opacity = c.o;
-        if (c.o > 0) el.style.transform = `translate3d(${c.x * w}px, ${c.y * h}px, 0)`;
+        if (c.o <= 0) return;
+        const x = c.x * w;
+        el.style.transform = `translate3d(${x}px, ${c.y * h}px, 0)`;
+        // keep the label on screen: on narrow phones the 3D point can sit near an edge,
+        // so slide the label box (not the dot) back inside an 8px margin
+        const box = el.lastElementChild;
+        const bw = box.offsetWidth;
+        const left = el.classList.contains("callout-left") ? x - 48 - bw : x + 48;
+        const shift = Math.max(0, 8 - left) + Math.min(0, w - 8 - (left + bw));
+        box.style.translate = shift ? `${shift}px 0` : "";
       });
     };
     gsap.ticker.add(place);
@@ -299,6 +316,9 @@ export default function Site() {
       {/* ---------- 18+ gate, which is also the loader ---------- */}
       {gate !== "done" && <Gate onDone={() => setGate("done")} />}
 
+      {/* ---------- Phone menu: the lit rolling paper that unrolls ---------- */}
+      <JointMenu links={NAV_LINKS} onJump={(sel) => lenisRef.current?.scrollTo(sel, { duration: 2.2 })} />
+
       {/* ---------- Bag, delivery details, confirmation ---------- */}
       <OrderSheet />
 
@@ -503,15 +523,7 @@ export default function Site() {
         </section>
 
         {/* ---------- Footer ---------- */}
-        <footer className="footer">
-          <img src="/logo-wide.jpg" alt="Toasted" className="footer-logo" />
-          <h2>Slide into<br />our DMs.</h2>
-          <a className="btn btn-hot btn-lg" href={INSTAGRAM} target="_blank" rel="noreferrer" data-cursor>@toastedindia ↗</a>
-          <p className="legal">
-            For adults 18+ only. Smoking is injurious to health. Toasted sells smoking accessories only.
-          </p>
-          <p className="legal">© {new Date().getFullYear()} Toasted India</p>
-        </footer>
+        <Footer links={NAV_LINKS} onJump={(sel) => lenisRef.current?.scrollTo(sel, { duration: 2.2 })} />
       </main>
     </div>
   );
