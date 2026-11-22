@@ -144,15 +144,15 @@ export default function Footer({ links, onJump, onProduct }) {
     gsap.registerPlugin(ScrollTrigger);
     const q = gsap.utils.selector(root);
     const ctx = gsap.context(() => {
-      gsap.set(q(".ft-head b"), { yPercent: 110, rotate: 6 });
+      gsap.set(q(".ft-head b"), { yPercent: 110, rotate: 3 });
       gsap.set(q(".ft-row"), { x: -30, opacity: 0 });
-      gsap.set(q(".ft-kicker, .ft-actions"), { opacity: 0, y: 16 });
+      gsap.set(q(".ft-kicker, .ft-sub, .ft-actions"), { opacity: 0, y: 16 });
       gsap.set(q(".ft-l"), { yPercent: 110, rotate: () => gsap.utils.random(-18, 18) });
       gsap.set(q(".ft-burnline i"), { scaleX: 0 });
       gsap
         .timeline({ scrollTrigger: { trigger: q(".ft-inner")[0], start: "top 80%", once: true } })
-        .to(q(".ft-head b"), { yPercent: 0, rotate: 0, duration: 0.9, stagger: 0.08, ease: "power4.out" })
-        .to(q(".ft-kicker, .ft-actions"), { opacity: 1, y: 0, duration: 0.6, stagger: 0.1 }, 0.2)
+        .to(q(".ft-head b"), { yPercent: 0, rotate: 0, duration: 1.1, stagger: 0.12, ease: "power4.out" })
+        .to(q(".ft-kicker, .ft-sub, .ft-actions"), { opacity: 1, y: 0, duration: 0.6, stagger: 0.1 }, 0.2)
         .to(q(".ft-row"), { x: 0, opacity: 1, duration: 0.6, stagger: 0.07, ease: "power3.out" }, 0.25);
       gsap
         .timeline({ scrollTrigger: { trigger: q(".ft-word")[0], start: "top 92%", once: true } })
@@ -176,15 +176,20 @@ export default function Footer({ links, onJump, onProduct }) {
     <footer className="ft" ref={root}>
       <canvas className="ft-embers" ref={canvas} aria-hidden="true" />
 
+      {/* quiet and simple: a serif line, one action, the products as a plain index */}
       <div className="ft-inner">
         <div className="ft-cta">
           <p className="ft-kicker"><i aria-hidden="true" /> Last light</p>
           <h2 className="ft-head" aria-label="Light one up.">
-            <span><b>Light</b></span> <span><b>one</b></span> <span><b className="o">up.</b></span>
+            <span><b>Light one</b></span>
+            <span><b><em>up.</em></b></span>
           </h2>
+          <p className="ft-sub">Ultra-thin papers and trays, rolled in India.</p>
           <div className="ft-actions">
-            <button type="button" className="btn btn-hot" onClick={() => cart.open()} data-cursor>Order now</button>
-            <a href="#drop" className="ft-more" onClick={(e) => { e.preventDefault(); onJump("#drop"); }}>Shop the drop →</a>
+            <button type="button" className="ft-btn" onClick={() => cart.open()} data-cursor>
+              Order now <span aria-hidden="true">→</span>
+            </button>
+            <a href="#drop" className="ft-more" onClick={(e) => { e.preventDefault(); onJump("#drop"); }}>Shop the drop</a>
           </div>
         </div>
 
@@ -193,11 +198,8 @@ export default function Footer({ links, onJump, onProduct }) {
             <li className="ft-row" key={p.slug}>
               <button type="button" onClick={() => onProduct(i)} data-cursor>
                 <i>{String(i + 1).padStart(2, "0")}</i>
-                <span className="ft-name">
-                  <b>{p.name} {p.name2}</b>
-                  <span>{p.kind}</span>
-                </span>
-                <em>from ₹{packPrice(p, 1)}</em>
+                <b>{p.name} {p.name2}</b>
+                <em>₹{packPrice(p, 1)}</em>
                 <u aria-hidden="true">→</u>
               </button>
             </li>

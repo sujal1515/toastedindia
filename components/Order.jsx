@@ -35,9 +35,14 @@ export function PackBuy({ product, size, onSize, tone = "card", tabIndex }) {
       <div className="packbuy-row">
         <p className="packbuy-price">
           <b>{rupees(packPrice(product, size))}</b>
-          <span>
-            <s>{rupees(packMrp(product, size))}</s> MRP
-          </span>
+          {/* the crossed-out MRP only shows when the pack actually saves something */}
+          {packPrice(product, size) < packMrp(product, size) ? (
+            <span>
+              <s>{rupees(packMrp(product, size))}</s> MRP
+            </span>
+          ) : (
+            <span>MRP</span>
+          )}
         </p>
         <button type="button" className="btn btn-hot btn-sm" onClick={() => cart.add(product.slug, size)} tabIndex={tabIndex} data-cursor>
           Add to bag
